@@ -1,0 +1,37 @@
+version: 2
+# could also be named _jaffle_shop__schema.yml
+
+models:
+
+    - name: stg_jaffle_shop__customers
+      description: one unique customer per row 
+      columns:
+        - name: customer_id
+          description: primary key 
+          tests:
+            - unique
+            - not_null
+
+    - name: stg_jaffle_shop__orders
+      description: one unique order per row 
+      columns:
+        - name: order_id
+          description: primary key
+          tests:
+            - unique
+            - not_null
+        - name: customer_id
+          tests:
+            - relationships:
+                field: customer_id # every customer ID in the orders table...
+                to: ref('stg_jaffle_shop__customers') # refers back to a customer in the customers table
+        - name: status
+          description: "{{ doc('order_status') }}"
+          tests:
+            - accepted_values:
+                values:
+                  - completed
+                  - shipped
+                  - returned
+                  - return_pending
+                  - placed 
